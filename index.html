@@ -1,4 +1,4 @@
-<index.html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -10,15 +10,15 @@
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:"Pretendard",sans-serif;
+    font-family:Arial, sans-serif;
 }
 
 body{
-    background:#f3f5f8;
+    background:#f4f6f9;
     display:flex;
     justify-content:center;
     align-items:center;
-    height:100vh;
+    min-height:100vh;
 }
 
 .container{
@@ -28,10 +28,10 @@ body{
 
 .card{
     background:white;
-    border-radius:20px;
-    padding:22px;
-    box-shadow:0 10px 25px rgba(0,0,0,.12);
-    transition:.35s;
+    border-radius:18px;
+    padding:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,.15);
+    transition:.3s;
 }
 
 .card.correct{
@@ -46,31 +46,30 @@ body{
 
 img{
     width:100%;
-    border-radius:12px;
-    margin-bottom:18px;
+    height:220px;
     object-fit:cover;
-    max-height:220px;
+    border-radius:12px;
+    margin-bottom:15px;
 }
 
 h2{
-    font-size:23px;
-    margin-bottom:18px;
-    line-height:1.45;
+    font-size:22px;
+    line-height:1.5;
+    margin-bottom:20px;
 }
 
 .buttons{
     display:flex;
-    gap:12px;
+    gap:10px;
 }
 
 button{
     flex:1;
     padding:14px;
-    font-size:17px;
     border:none;
-    border-radius:12px;
+    border-radius:10px;
+    font-size:17px;
     cursor:pointer;
-    transition:.2s;
     font-weight:bold;
 }
 
@@ -80,28 +79,28 @@ button{
 }
 
 #fakeBtn{
-    background:#ff7675;
+    background:#e74c3c;
     color:white;
 }
 
 button:hover{
-    transform:scale(1.03);
+    opacity:.9;
 }
 
 button:disabled{
-    opacity:.55;
+    opacity:.6;
     cursor:default;
 }
 
-.reason{
-    margin-top:18px;
-    line-height:1.6;
+#reason{
     display:none;
+    margin-top:20px;
+    line-height:1.6;
 }
 
-.nextBtn{
+#nextBtn{
     width:100%;
-    margin-top:18px;
+    margin-top:20px;
     background:#222;
     color:white;
     display:none;
@@ -114,10 +113,6 @@ button:disabled{
 .score h1{
     margin-bottom:15px;
 }
-
-.score p{
-    font-size:22px;
-}
 </style>
 </head>
 
@@ -125,131 +120,139 @@ button:disabled{
 
 <div class="container">
 
-    <div class="card" id="card">
+<div class="card" id="card">
 
-        <div id="imageArea"></div>
+<div id="imageArea"></div>
 
-        <h2 id="headline"></h2>
+<h2 id="headline"></h2>
 
-        <div class="buttons">
-            <button id="realBtn">진짜</button>
-            <button id="fakeBtn">가짜</button>
-        </div>
+<div class="buttons">
+<button id="realBtn">진짜</button>
+<button id="fakeBtn">가짜</button>
+</div>
 
-        <div class="reason" id="reason"></div>
+<div id="reason"></div>
 
-        <button class="nextBtn" id="nextBtn">다음 ▶</button>
+<button id="nextBtn">다음 문제</button>
 
-    </div>
+</div>
 
 </div>
 
 <script>
+
 const newsData = [
+
 {
-  "headline": "KBO 경기 중 한화 김서현-두산 조인성 맞대결 영상 화제",
-  "isFake": true,
-  "reason": "조인성은 2017년 은퇴, 김서현은 2023년 입단으로 두 선수는 함께 뛴 적이 없습니다. 응원 문구도 실제와 다른 어색한 표현입니다.",
-  "image": "photo_baseball.jpg"
+headline:"KBO 경기 중 한화 김서현-두산 조인성 맞대결 영상 화제",
+isFake:true,
+reason:"조인성은 2017년 은퇴했고 김서현은 2023년 입단하여 실제로 맞대결이 불가능합니다.",
+image:"photo_baseball.jpg"
 },
+
 {
-  "headline": "콜라 마시면 북극곰 돼.. 동물학자 논란",
-  "isFake": true,
-  "reason": "콜라를 마신다고 북극곰이 되는 것은 생물학적으로 불가능하며, 이를 뒷받침하는 과학적 근거도 없습니다. '동물학자 논란'이라는 표현도 구체적인 출처나 사실이 확인되지 않은 허위 주장입니다.",
-  "image": "photo_polarbear.jpg"
+headline:"콜라 마시면 북극곰 돼.. 동물학자 논란",
+isFake:true,
+reason:"콜라를 마신다고 북극곰이 되는 것은 생물학적으로 불가능한 허위 주장입니다.",
+image:"photo_polarbear.jpg"
 },
+
 {
-  "headline": "두더지.. 사람도 잡아먹는 최상위 포식자",
-  "isFake": true,
-  "reason": "두더지가 가장 크게 자라는 크기와 그 개체가 낼 수 있는 힘을 고려해봤을 때 두더지가 사람을 땅굴로 끌고데려가 잡아먹는 것은 허위 주장입니다.",
-  "image": "photo_dodoeshe.jpg"
+headline:"두더지.. 사람도 잡아먹는 최상위 포식자",
+isFake:true,
+reason:"두더지가 사람을 사냥하거나 잡아먹는다는 근거는 없습니다.",
+image:"photo_dodoeshe.jpg"
 }
+
 ];
 
-let index=0;
+let current=0;
 let score=0;
 
 const card=document.getElementById("card");
 const headline=document.getElementById("headline");
 const imageArea=document.getElementById("imageArea");
 const reason=document.getElementById("reason");
-const nextBtn=document.getElementById("nextBtn");
 
 const realBtn=document.getElementById("realBtn");
 const fakeBtn=document.getElementById("fakeBtn");
+const nextBtn=document.getElementById("nextBtn");
 
-function loadCard(){
+function loadQuestion(){
 
-    card.className="card";
+card.className="card";
 
-    reason.style.display="none";
-    nextBtn.style.display="none";
+reason.style.display="none";
+nextBtn.style.display="none";
 
-    realBtn.disabled=false;
-    fakeBtn.disabled=false;
+realBtn.disabled=false;
+fakeBtn.disabled=false;
 
-    const item=newsData[index];
+const q=newsData[current];
 
-    headline.innerText=item.headline;
+headline.textContent=q.headline;
 
-    if(item.image){
-        imageArea.innerHTML=`<img src="${item.image}" alt="">`;
-    }else{
-        imageArea.innerHTML="";
-    }
+if(q.image){
+imageArea.innerHTML='<img src="'+q.image+'" alt="">';
+}else{
+imageArea.innerHTML='';
+}
 
 }
 
-function answer(userFake){
+function check(userAnswer){
 
-    realBtn.disabled=true;
-    fakeBtn.disabled=true;
+realBtn.disabled=true;
+fakeBtn.disabled=true;
 
-    const item=newsData[index];
+const q=newsData[current];
 
-    const correct=(userFake===item.isFake);
+const correct=(userAnswer===q.isFake);
 
-    if(correct){
-        score++;
-        card.classList.add("correct");
-    }else{
-        card.classList.add("wrong");
-    }
+if(correct){
+score++;
+card.classList.add("correct");
+reason.innerHTML="<b>정답!</b><br><br>"+q.reason;
+}else{
+card.classList.add("wrong");
+reason.innerHTML="<b>오답!</b><br><br>"+q.reason;
+}
 
-    reason.style.display="block";
-    reason.innerHTML=
-        "<b>"+(correct?"정답!":"오답!")+"</b><br><br>"+item.reason;
-
-    nextBtn.style.display="block";
+reason.style.display="block";
+nextBtn.style.display="block";
 
 }
 
-realBtn.onclick=()=>answer(false);
-fakeBtn.onclick=()=>answer(true);
+realBtn.onclick=function(){
+check(false);
+};
 
-nextBtn.onclick=()=>{
+fakeBtn.onclick=function(){
+check(true);
+};
 
-    index++;
+nextBtn.onclick=function(){
 
-    if(index>=newsData.length){
+current++;
 
-        card.innerHTML=`
-        <div class="score">
-            <h1>🎉 게임 종료!</h1>
-            <p><b>${newsData.length}개 중 ${score}개</b>를 맞혔습니다.</p>
-            <br>
-            <button onclick="location.reload()">다시 하기</button>
-        </div>
-        `;
+if(current>=newsData.length){
 
-        return;
-    }
+card.innerHTML=
+'<div class="score">'+
+'<h1>🎉 게임 종료!</h1>'+
+'<h2>3문제 중 '+score+'문제를 맞혔습니다.</h2>'+
+'<br><button onclick="location.reload()">다시 하기</button>'+
+'</div>';
 
-    loadCard();
+return;
+
+}
+
+loadQuestion();
 
 };
 
-loadCard();
+loadQuestion();
 
 </script>
 
